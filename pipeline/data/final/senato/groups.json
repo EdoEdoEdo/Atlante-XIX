@@ -1,0 +1,102 @@
+[
+ {
+  "id": "FDI",
+  "nome": "Fratelli d'Italia",
+  "sigla": "FdI",
+  "colore": "#1E3A6E",
+  "lato": 1,
+  "misto": false,
+  "membri_oggi": 63,
+  "ordine": 8
+ },
+ {
+  "id": "LEGA",
+  "nome": "Lega – Partito Sardo d'Azione",
+  "sigla": "Lega",
+  "colore": "#2E7D46",
+  "lato": 1,
+  "misto": false,
+  "membri_oggi": 29,
+  "ordine": 9
+ },
+ {
+  "id": "FI",
+  "nome": "Forza Italia",
+  "sigla": "FI",
+  "colore": "#3E8ED0",
+  "lato": 1,
+  "misto": false,
+  "membri_oggi": 20,
+  "ordine": 7
+ },
+ {
+  "id": "CDI",
+  "nome": "Civici d'Italia – Noi Moderati – MAIE",
+  "sigla": "Cd'I–NM",
+  "colore": "#E08A2E",
+  "lato": 1,
+  "misto": false,
+  "membri_oggi": 7,
+  "ordine": 6
+ },
+ {
+  "id": "PD",
+  "nome": "Partito Democratico",
+  "sigla": "PD",
+  "colore": "#D0464E",
+  "lato": 2,
+  "misto": false,
+  "membri_oggi": 35,
+  "ordine": 0
+ },
+ {
+  "id": "M5S",
+  "nome": "Movimento 5 Stelle",
+  "sigla": "M5S",
+  "colore": "#E9BE12",
+  "lato": 2,
+  "misto": false,
+  "membri_oggi": 25,
+  "ordine": 1
+ },
+ {
+  "id": "AZIV",
+  "nome": "Azione – Italia Viva",
+  "sigla": "Az–IV",
+  "colore": "#6F5FB8",
+  "lato": 2,
+  "misto": false,
+  "membri_oggi": 0,
+  "ordine": 5
+ },
+ {
+  "id": "IV",
+  "nome": "Italia Viva",
+  "sigla": "IV",
+  "colore": "#C2449A",
+  "lato": 2,
+  "misto": false,
+  "membri_oggi": 8,
+  "ordine": 3
+ },
+ {
+  "id": "AUT",
+  "nome": "Per le Autonomie",
+  "sigla": "Aut.",
+  "colore": "#6B6A66",
+  "lato": 2,
+  "misto": false,
+  "membri_oggi": 7,
+  "ordine": 2
+ },
+ {
+  "id": "ALT",
+  "nome": "Misto",
+  "sigla": "Misto",
+  "colore": "#A39E93",
+  "lato": 0,
+  "misto": true,
+  "membri_oggi": 11,
+  "ordine": 4
+ }
+]

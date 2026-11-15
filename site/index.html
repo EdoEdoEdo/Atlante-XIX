@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atlante XIX — Il Parlamento, voto per voto</title>
+<meta name="description" content="Come hanno votato davvero deputati e senatori nella XIX legislatura: ogni parlamentare è un punto, ogni votazione una linea. Dati di Camera e Senato.">
+<meta name="theme-color" content="#0E0E0D">
+<meta property="og:title" content="Atlante XIX — Il Parlamento, voto per voto">
+<meta property="og:description" content="Chi vota con chi alla Camera e al Senato, voto per voto, nella XIX legislatura.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400;1,6..72,500&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,800&display=swap">
+<link rel="stylesheet" href="./src/styles/main.css">
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<canvas id="cv" role="img" aria-label="Ogni punto è un deputato della Camera"></canvas>
+
+<div class="loader" id="loader" role="status" aria-live="polite">
+  <div class="ld-top ld-txt"><span class="ld-a">Atlante</span><span class="ld-x">XIX</span></div>
+  <div class="ld-mid"><b id="loadPct">0%</b><span id="loadLbl">caricamento</span></div>
+  <p class="ld-msg" id="loadMsg" hidden></p>
+  <div class="ld-foot ld-txt"><span>Il Parlamento, voto per voto</span><span>Camera dei Deputati · XIX legislatura</span></div>
+</div>
+
+<header class="hd" id="hd">
+  <a class="mast" href="./" id="mast" aria-label="Atlante XIX, torna all'introduzione"><span class="mast-a">Atlante</span><span class="mast-x">XIX</span></a>
+  <span class="mast-t">Il Parlamento, voto per voto</span>
+  <button class="sbtn" id="sbtn" type="button" aria-haspopup="dialog">
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="6.8" cy="6.8" r="5.1" stroke="currentColor" stroke-width="1.6"/><path d="M10.6 10.6L15 15" stroke="currentColor" stroke-width="1.6"/></svg>
+    <span class="sbtn-l">Cerca un deputato, una data, un tema…</span><kbd>⌘K</kbd>
+  </button>
+  <div class="hd-r">
+    <div class="seg" id="aulaSeg" role="group" aria-label="Camera o Senato"><button class="on" type="button" data-act="aula" data-aula="camera" aria-pressed="true">Camera</button><button type="button" data-act="aula" data-aula="senato" aria-pressed="false" disabled title="In arrivo">Senato</button></div>
+    <a class="lnk" href="#metodologia">Metodo</a>
+  </div>
+</header>
+
+<main class="intro" id="intro">
+  <div class="icol">
+    <section class="step on" data-s="0">
+      <div class="step-in">
+        <p class="kick">Camera dei Deputati · XIX legislatura · dal 13 ottobre 2022</p>
+        <h1 class="big" aria-label="Atlante XIX"><span class="big-a">Atlante</span><span class="big-x">XIX</span></h1>
+        <p class="deck">Il Parlamento, voto per voto.</p>
+        <p class="lede">Ogni punto è un deputato. Resta lo stesso punto in tutto l'atlante: cambia solo dove si trova e di che colore è.</p>
+        <div class="facts"><div><b>400</b><span>seggi</span></div><div><b id="fDeps">—</b><span>deputati nel tempo</span></div><div><b id="fVotes">—</b><span>votazioni</span></div></div>
+        <div class="step-ctl"><span>↓ Scorri</span><button class="skip" type="button" data-act="enter">Salta l'introduzione →</button></div>
+      </div>
+    </section>
+    <section class="step" data-s="1">
+      <div class="step-in">
+        <p class="kick"><b>Tav. I</b> — Emiciclo</p>
+        <h2>La Camera che conosci.</h2>
+        <p class="body">Seduti per gruppo parlamentare, come in aula: a destra la maggioranza, a sinistra l'opposizione. È la mappa dichiarata, quella dei simboli sulla scheda.</p>
+        <div class="glist" id="iGroups"></div>
+      </div>
+    </section>
+    <section class="step" data-s="2">
+      <div class="step-in">
+        <p class="kick"><b>Un voto</b> — <span id="ivKick">votazione finale</span></p>
+        <h2 id="ivH">Un voto.</h2>
+        <p class="body">I punti lasciano i seggi e si mettono in colonna, ognuno con il colore del suo gruppo: favorevoli, contrari, astenuti, chi non ha partecipato e chi era in missione.</p>
+        <div class="vrow"><div><b id="ivF">—</b><span>favorevoli</span></div><div class="c"><b id="ivC">—</b><span>contrari</span></div><div><b id="ivA">—</b><span>astenuti</span></div><div><b id="ivN">—</b><span>non votanti</span></div><div><b id="ivM">—</b><span>in missione</span></div></div>
+        <p class="note">Scelto con una regola dichiarata: il voto finale sull'ultima legge di bilancio.</p>
+      </div>
+    </section>
+    <section class="step" data-s="3">
+      <div class="step-in">
+        <p class="kick"><b>Tav. II</b> — Mappa dei voti</p>
+        <h2>Ognuno si avvicina a chi vota come lui.</h2>
+        <p class="body">Le distanze vengono dalle <b id="iCont">—</b> votazioni contese, quelle in cui maggioranza e opposizione si sono divise. Gli assi non hanno un significato: contano solo le distanze.</p>
+      </div>
+    </section>
+    <section class="step" data-s="4">
+      <div class="step-in">
+        <p class="kick"><b>Cambi di gruppo</b> — Poi è tua</p>
+        <h2>Tra qualche mese voterai. Ora sai come hanno votato loro.</h2>
+        <p class="body">Le linee seguono i <b id="iCh">—</b> deputati che hanno cambiato gruppo. Cerca un nome, una data, una circoscrizione. Cambia tavola, cambia colore, scegli un periodo.</p>
+        <button class="cta" type="button" data-act="enter">Esplora il Parlamento →</button>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="ifoot"><span>Fonte: Camera dei Deputati — dati.camera.it (CC BY)</span><span id="updated"></span><a href="#metodologia">Metodologia</a><span class="credits">Progetto di <a class="cred" href="https://www.edoedoedo.it/" target="_blank" rel="noopener">EDOEDOEDO</a> · <a href="https://github.com/EdoEdoEdo" target="_blank" rel="noopener">GitHub</a></span></footer>
+
+<div class="app" id="app" aria-hidden="true">
+  <aside class="rail" id="rail" aria-label="Tavola e colore">
+    <div class="rsec"><h2 class="rh">Tavola</h2>
+      <div class="opts" id="views">
+        <button type="button" data-view="hemi"><span class="rn">I</span><span>Emiciclo<small>dove siedono</small></span></button>
+        <button type="button" data-view="map"><span class="rn">II</span><span>Mappa<small>chi vota con chi</small></span></button>
+        <button type="button" data-view="vote"><span class="rn">III</span><span>Voto<small id="voteHint">scegli una votazione</small></span></button>
+      </div>
+    </div>
+    <div class="rsec"><h2 class="rh">Colore</h2>
+      <div class="opts" id="lenses">
+        <button type="button" data-lens="groups">Gruppi</button>
+        <button type="button" data-lens="presence">Presenza al voto</button>
+        <button type="button" data-lens="dissent">Dissenso dal gruppo</button>
+        <button type="button" data-lens="cross">Trasversalità</button>
+        <button type="button" data-lens="changes">Cambi di gruppo</button>
+        <button type="button" data-lens="sim">Somiglianza con…</button>
+      </div>
+    </div>
+    <div class="rsec" id="baseSec"><h2 class="rh">Base dell'accordo</h2>
+      <div class="seg" id="baseSeg"><button type="button" data-base="cont">Voti contesi</button><button type="button" data-base="all">Tutte</button></div>
+    </div>
+    <div class="rsec legend" id="legend"></div>
+    <p class="rfoot">Fonte: <span id="rfootSrc">Camera dei Deputati — dati.camera.it</span> (CC BY)<br><span id="updated2"></span><br><span class="credits">Progetto di <a class="cred" href="https://www.edoedoedo.it/" target="_blank" rel="noopener">EDOEDOEDO</a> · <a href="https://github.com/EdoEdoEdo" target="_blank" rel="noopener">GitHub</a></span></p>
+  </aside>
+
+  <section class="stagewrap" id="stagewrap" aria-label="Tavola">
+    <div class="sbar"><div class="pills" id="pills"></div>
+      <div class="seg" id="panelSeg"><button type="button" data-panel="stage">Tavola</button><button type="button" data-panel="table">Indice</button></div></div>
+    <div class="slot" id="slot"><div class="plate" id="plate"></div><div class="pickbar" id="pickbar" hidden></div><div class="mlegend" id="mlegend" aria-hidden="true"></div><div class="aload" id="aload" role="status" hidden></div></div>
+    <div class="tablebox" id="tablebox" hidden>
+      <div class="tbar" id="tbar">
+        <label class="sr" for="tq">Cerca nell'indice</label><input id="tq" placeholder="Nome o circoscrizione…" autocomplete="off">
+        <button class="chip" type="button" data-pr="all">Tutti</button>
+        <button class="chip" type="button" data-pr="presHigh">Presenza più alta</button>
+        <button class="chip" type="button" data-pr="presLow">Presenza più bassa</button>
+        <button class="chip" type="button" data-pr="dissent">Più dissenso</button>
+        <button class="chip" type="button" data-pr="cross">Più trasversali</button>
+        <button class="chip" type="button" data-pr="changed">Cambi di gruppo</button>
+      </div>
+      <div class="tnote" id="tnote"></div>
+      <div class="tscroll"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+    </div>
+  </section>
+
+  <aside class="card" id="card" aria-label="Scheda">
+    <div class="handle" id="handle" role="button" tabindex="0" aria-label="Espandi o riduci la scheda"><i></i></div>
+    <div class="card-in" id="cardIn"></div>
+  </aside>
+
+  <section class="bc" id="bc" aria-label="Codice a barre delle votazioni">
+    <div class="bch">
+      <span class="bct">Votazioni</span>
+      <div class="chips" id="fchips">
+        <button class="chip" type="button" data-f="all">Tutte</button>
+        <button class="chip" type="button" data-f="cont">Contese</button>
+        <button class="chip" type="button" data-f="finale">Voti finali</button>
+        <button class="chip" type="button" data-f="fiducia">Fiducie</button>
+        <button class="chip" type="button" data-f="segreta">Segrete</button>
+        <button class="chip" type="button" data-f="respinta">Respinte</button>
+        <button class="chip" type="button" data-f="stretto">Margine stretto</button>
+      </div>
+      <div class="bci"><span class="cnt" id="bcCount"></span><span class="md" id="bcMode"></span>
+        <button type="button" data-act="zout" aria-label="Riduci lo zoom">−</button><button type="button" data-act="zin" aria-label="Aumenta lo zoom">+</button><button type="button" data-act="zfull">Tutta</button><button type="button" class="play" id="play" data-act="play">▶ Anima</button></div>
+    </div>
+    <div class="bcw" id="bcw"><canvas id="bcv" aria-label="Una linea per seduta o per votazione, in ordine di data"></canvas></div>
+  </section>
+</div>
+
+<div class="cmdk" id="cmdk" hidden role="dialog" aria-modal="true" aria-label="Cerca">
+  <div class="cmdk-box">
+    <div class="cmdk-in">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="6.8" cy="6.8" r="5.1" stroke="currentColor" stroke-width="1.6"/><path d="M10.6 10.6L15 15" stroke="currentColor" stroke-width="1.6"/></svg>
+      <label class="sr" for="q">Cerca</label>
+      <input id="q" placeholder="Un cognome · 10 maggio 2024 · fiducie 2025 · Lombardia" autocomplete="off" spellcheck="false">
+      <button class="cmdk-x" type="button" data-act="cmdk-close">Esc</button>
+    </div>
+    <div class="cmdk-res" id="res" role="listbox"></div>
+    <div class="cmdk-foot"><span>↑↓ scegli</span><span>Invio apri</span><span>«Meloni vs Schlein» confronta</span><span>«contese 2025» filtra</span></div>
+  </div>
+</div>
+
+<div class="method" id="method" hidden>
+  <section class="m-panel" id="methodPanel" role="dialog" aria-modal="true" aria-labelledby="mTitle" tabindex="-1">
+    <div class="m-bar">
+      <span class="m-mast"><span class="mast-a">Atlante</span><span class="mast-x">XIX</span><span class="m-sec">Metodologia</span></span>
+      <button class="cmdk-x" type="button" data-act="method-close">Chiudi ✕</button>
+    </div>
+    <div class="m-scroll" id="mScroll">
+      <div class="m-wrap">
+        <nav class="m-toc" aria-label="Indice della metodologia">
+        <a href="#m-fonte">Fonte</a>
+        <a href="#m-voti">Votazioni</a>
+        <a href="#m-stati">Come si vota</a>
+        <a href="#m-presenza">Presenza</a>
+        <a href="#m-gruppi">Gruppi</a>
+        <a href="#m-maggioranza">Maggioranza</a>
+        <a href="#m-contese">Contese</a>
+        <a href="#m-posizione">Posizione</a>
+        <a href="#m-dissenso">Dissenso</a>
+        <a href="#m-trasversalita">Trasversalità</a>
+        <a href="#m-accordo">Accordo</a>
+        <a href="#m-mappa">Mappa</a>
+        <a href="#m-cambi">Cambi di gruppo</a>
+        <a href="#m-senato">Senato</a>
+        <a href="#m-colori">Colori</a>
+        <a href="#m-limiti">Limiti</a>
+        <a href="#m-errori">Errori</a>
+        </nav>
+        <div class="m-main">
+          <h2 class="m-title" id="mTitle">Come si leggono i numeri</h2>
+          <p class="deck">Ogni numero dell'atlante viene da una regola scritta qui, applicata a tutti i parlamentari e a tutti i gruppi nello stesso modo.</p>
+          <div class="facts">
+            <div><b data-m="votazioni">—</b><span>votazioni</span></div>
+            <div><b data-m="deputati">—</b><span>deputati</span></div>
+            <div><b data-m="aggiornato">—</b><span>ultimo voto</span></div>
+          </div>
+        <div class="m-body">
+      <h3 id="m-fonte">Fonte e aggiornamento</h3>
+      <p>Votazioni elettroniche dell'Assemblea della Camera dei Deputati, XIX legislatura, scaricate dall'endpoint pubblico <code>dati.camera.it</code> (licenza CC BY). Le missioni e i presidenti di turno vengono dalle schede ufficiali di ogni votazione sul sito della Camera. Non sono incluse le votazioni in commissione né l'attività che non passa da un voto elettronico.</p>
+      <p>I dati arrivano fino al <b data-m="aggiornato-lungo">—</b> e vengono aggiornati periodicamente fino alla fine della legislatura.</p>
+
+      <h3 id="m-voti">Votazioni palesi, segrete e incomplete</h3>
+      <p>Su <span data-m="votazioni">—</span> votazioni, <span data-m="valide">—</span> hanno i voti individuali completi. Per le <span data-m="segrete">—</span> votazioni segrete esistono solo i totali: restano nel codice a barre ma sono escluse da tutte le metriche individuali e dall'accordo. Per <span data-m="incomplete">—</span> votazioni i voti individuali pubblicati non corrispondono ai totali ufficiali: restano i totali, sono escluse dalle metriche.</p>
+      <p>Ogni linea del codice a barre è una votazione: l'altezza indica quanto è stato netto il risultato (differenza tra favorevoli e contrari sui voti espressi); in rosso i voti finali e le fiducie. Il filtro «margine stretto» mostra le votazioni con meno del 10% di differenza.</p>
+
+      <h3 id="m-stati">Come può votare un deputato</h3>
+      <ul>
+        <li><b>Favorevole</b>, <b>contrario</b>, <b>astenuto</b>: i voti espressi.</li>
+        <li><b>Non ha partecipato</b>: in carica, non in missione, ma senza voto registrato. Non significa per forza assente: si può essere in aula e scegliere di non votare.</li>
+        <li><b>In missione</b>: assente per incarichi istituzionali, come indicato nella scheda ufficiale della votazione. Per i membri del Governo è la situazione più frequente.</li>
+        <li><b>Presidente di turno</b>: chi presiede la seduta non vota.</li>
+      </ul>
+
+      <h3 id="m-presenza">Presenza al voto</h3>
+      <p>Voti espressi (favorevole, contrario, astenuto) sul totale delle votazioni palesi valide in cui il deputato era in carica, escluse quelle in cui presiedeva la seduta. Le missioni sono contate a parte e sono sempre mostrate accanto alla presenza: un ministro in missione non è un deputato che non partecipa.</p>
+      <p>Le metriche non vengono mostrate sotto le 30 votazioni (deputati entrati da poco, periodi brevi). Il Presidente della Camera, che per prassi non vota, è escluso dalle classifiche. Nella tabella, i preset sulla presenza escludono anche i membri del Governo.</p>
+
+      <h3 id="m-gruppi">Gruppi parlamentari</h3>
+      <p>Ogni voto è attribuito al gruppo a cui il deputato apparteneva quel giorno. I deputati del gruppo Misto sono attribuiti alla loro componente politica; chi non aderisce ad alcuna componente è considerato da solo.</p>
+      <p>Azione–Italia Viva è un gruppo unico fino alla scissione del novembre 2023; poi ci sono due gruppi, Azione e Italia Viva. Quando un deputato appena arrivato ha un gruppo provvisorio, si usa il gruppo più vicino nel tempo.</p>
+
+      <h3 id="m-maggioranza">Maggioranza, opposizione, non schierati</h3>
+      <p>Lo schieramento di ogni gruppo viene dai voti di fiducia: sostiene il Governo chi vota a favore sulle questioni di fiducia e contro le mozioni di sfiducia. Conta il comportamento più frequente: sostegno → maggioranza; voto opposto → opposizione; astensione prevalente → non schierato. La stessa regola vale per le componenti del Misto e, uno per uno, per i deputati non iscritti a una componente.</p>
+      <p>L'opposizione non è trattata come un blocco unico: nelle schede ogni gruppo è mostrato da solo.</p>
+
+      <h3 id="m-contese">Votazioni contese</h3>
+      <p>Una votazione è contesa quando il voto più frequente tra i deputati di maggioranza è diverso dal voto più frequente tra i deputati di opposizione. Si contano i deputati, non i gruppi: un gruppo da 6 non pesa quanto uno da 100. Nella legislatura sono contese <b data-m="contese">—</b> votazioni, il <b data-m="contese-pc">—</b> di quelle valide.</p>
+      <p>Molte votazioni non contese sono quasi unanimi (ratifiche, ordini del giorno condivisi): farebbero sembrare tutti d'accordo con tutti. Per questo l'accordo e la mappa usano le votazioni contese; il dato su tutte le votazioni è sempre disponibile accanto.</p>
+
+      <h3 id="m-posizione">Posizione di un gruppo</h3>
+      <p>È il voto più frequente tra favorevoli, contrari e astenuti dei membri del gruppo che hanno votato. Per misurare il voto di un deputato rispetto al suo gruppo, la posizione si calcola senza il suo voto: nei gruppi piccoli conta. In caso di parità la posizione non è definita e la votazione non entra nel calcolo. Il Misto riunisce componenti diverse e non ha una posizione propria.</p>
+
+      <h3 id="m-dissenso">Dissenso dal gruppo</h3>
+      <p>Quota dei voti espressi diversi dalla posizione del proprio gruppo al momento del voto. «Vota col suo gruppo» è il complemento. Non è calcolato per il Misto. I valori sono piccoli per quasi tutti: la mediana della Camera è sotto l'1%. Per questo le scale di colore coprono il dominio reale dei valori e ogni legenda mostra la distribuzione.</p>
+
+      <h3 id="m-trasversalita">Trasversalità</h3>
+      <p>Quota delle votazioni contese in cui il deputato ha votato come il voto più frequente dell'altro schieramento: un deputato di maggioranza che vota come l'opposizione, o viceversa. Si calcola direttamente dai voti, non dalla mappa. Per i non schierati non è definita.</p>
+
+      <h3 id="m-accordo">Accordo tra due deputati e con un gruppo</h3>
+      <p><b>Tra due deputati</b>: votazioni in cui hanno votato allo stesso modo (favorevole, contrario o astenuto), diviso le votazioni palesi in cui hanno votato entrambi. Assenze, missioni e «non ha partecipato» non entrano nel calcolo. Sotto le <b>50 votazioni in comune</b> il valore non viene mostrato.</p>
+      <p><b>Con un gruppo</b>: quota di votazioni in cui il deputato ha votato come la posizione del gruppo, calcolata come sopra (per il proprio gruppo, senza il suo voto). L'andamento mese per mese mostra quando un deputato si è avvicinato o allontanato.</p>
+      <p>Il confronto uno contro uno è calcolato nel browser dai voti dei due deputati, con le stesse regole.</p>
+
+      <h3 id="m-mappa">La mappa dei voti</h3>
+      <p>La distanza tra due deputati è 1 − accordo sulle votazioni contese. Le distanze sono proiettate su due dimensioni con uno scaling multidimensionale pesato (SMACOF): le coppie con meno votazioni in comune pesano meno, quelle sotto le 50 non pesano. Gli assi non hanno un significato proprio: contano solo le distanze. L'orientamento è fissato con i gruppi di maggioranza a destra, come nell'emiciclo.</p>
+      <p>Oltre alla mappa complessiva ci sono una mappa per anno e una per mese, calcolata su una finestra di tre mesi (soglia di 25 votazioni in comune) e allineata alla mappa complessiva, così che i punti si possano seguire nel tempo. Quando si sceglie un periodo, l'atlante mostra la mappa precalcolata più vicina: mensile per i periodi fino a 100 giorni, annuale se il periodo coincide in gran parte con un anno, altrimenti complessiva. Nessuna mappa viene calcolata nel browser.</p>
+
+      <h3 id="m-cambi">Cambi di gruppo</h3>
+      <p>Sono contati i passaggi da un gruppo a un altro dopo la costituzione dei gruppi a inizio legislatura: <span data-m="cambi-ind">—</span> per scelta individuale e <span data-m="cambi-sc">—</span> con la scissione di Azione–Italia Viva. I passaggi tra componenti del Misto sono indicati nelle schede ma non contati come cambi di gruppo. Il passaggio da Azione–Italia Viva ad Azione non è un cambio: è lo stesso gruppo dopo la scissione.</p>
+
+      <h3 id="m-senato">Senato</h3>
+      <p>Per il Senato la fonte è <code>dati.senato.it</code> (licenza CC BY): per ogni votazione dell'Assemblea il Senato pubblica gli elenchi dei senatori favorevoli, contrari, astenuti, presenti non votanti, in congedo o missione e il presidente di turno. Le regole sono le stesse della Camera: maggioranza e opposizione dai voti di fiducia, votazioni contese, posizione dei gruppi, accordo e mappa.</p>
+      <p>Cambiano alcune categorie, e per questo i numeri delle due aule non vanno confrontati tra loro:</p>
+      <ul>
+        <li><b>In congedo o missione</b>: il Senato riunisce in un solo elenco le assenze per incarichi istituzionali e i congedi. Alla Camera le missioni sono solo quelle per incarico.</li>
+        <li><b>Presente non votante</b>: in Aula, ma senza voto registrato, compreso chi ha chiesto la votazione senza poi votare. Non è un voto espresso: nella presenza al voto conta con chi non ha votato, e nella vista Voto ha una colonna sua.</li>
+        <li><b>Assente</b>: in carica, ma in nessuno degli elenchi della votazione.</li>
+      </ul>
+      <p>Il gruppo Misto del Senato non ha componenti nei dati aperti: ogni senatore del Misto è classificato da solo, dai suoi voti di fiducia, come i deputati non iscritti a una componente. I senatori a vita sono attribuiti al gruppo a cui aderiscono, con le stesse regole.</p>
+      <p>Il 9 novembre 2023 il gruppo Azione–Italia Viva è diventato Italia Viva e i senatori di Azione sono passati al Misto: per loro il passaggio è contato come scissione, per chi è rimasto non è un cambio di gruppo.</p>
+      <p>Il Senato non segna in un campo a parte voti finali e fiducie: sono riconosciuti dal testo della votazione («votazione finale», «questione di fiducia», «sfiducia»). Le verifiche del numero legale non sono votazioni e non sono incluse; nemmeno le votazioni annullate, che vengono ripetute subito dopo. Le controprove sono incluse: sono votazioni registrate come le altre. Al Senato gli astenuti sono contati tra i votanti, ma la maggioranza richiesta si calcola di norma su favorevoli e contrari: le schede riportano i totali ufficiali. Delle votazioni segrete esistono solo i totali. Gli incarichi di Governo dei senatori vengono dai dati della Camera, collegati per cognome e nome. Il confronto uno contro uno resta sempre dentro la stessa aula.</p>
+
+      <h3 id="m-colori">Colori e scale</h3>
+      <p>I colori dei gruppi sono quelli convenzionali dei partiti e non esprimono un giudizio. Le lenti numeriche (presenza, dissenso, trasversalità, somiglianza) usano una scala in inchiostro, dal chiaro allo scuro, che copre il dominio reale dei valori (dal 2° al 98° percentile). Due punti di tono diverso possono differire di pochi decimali: leggi sempre il numero nella scheda.</p>
+      <p>Nella vista Voto i punti seguono la lente scelta (di base, il colore del gruppo); nell'emiciclo con una votazione scelta: favorevole in inchiostro, contrario in rosso, astenuto in grigio, chi non ha votato vuoto.</p>
+
+      <h3 id="m-limiti">Cosa non misura</h3>
+      <p>L'atlante descrive come si è votato in Aula. Non misura il lavoro in commissione, gli interventi, le proposte di legge né l'impegno di un parlamentare. Per il contenuto delle leggi rimanda alle schede ufficiali, senza riassunti.</p>
+
+      <h3 id="m-errori">Segnala un errore</h3>
+      <p>Se trovi un dato che non torna, scrivimi su LinkedIn: <a href="https://www.linkedin.com/in/edoardo-di-sabatino-1053b711b/" target="_blank" rel="noopener">Edoardo Di Sabatino</a>. Indica la scheda e incolla il link alla vista (il pulsante «Copia il link a questa vista» in ogni scheda). Le segnalazioni vengono verificate sui dati ufficiali e corrette con l'aggiornamento successivo.</p>
+
+        </div>
+        <footer class="m-foot"><span>Fonti: Camera dei Deputati — dati.camera.it · Senato della Repubblica — dati.senato.it (CC BY)</span><span class="credits">Progetto di <a class="cred" href="https://www.edoedoedo.it/" target="_blank" rel="noopener">EDOEDOEDO</a> · <a href="https://github.com/EdoEdoEdo" target="_blank" rel="noopener">GitHub</a></span></footer>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="tip" id="tip" role="tooltip"></div>
+<div class="toast" id="toast" role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<noscript><p class="nojs">Atlante XIX ha bisogno di JavaScript per disegnare le tavole. <span class="credits">Progetto di <a class="cred" href="https://www.edoedoedo.it/" target="_blank" rel="noopener">EDOEDOEDO</a> · <a href="https://github.com/EdoEdoEdo" target="_blank" rel="noopener">GitHub</a></span></p></noscript>
+<script type="module" src="./src/main.ts"></script>
+</body>
+</html>

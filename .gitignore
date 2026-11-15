@@ -1,0 +1,11 @@
+# dipendenze e build
+node_modules/
+site/dist/
+# dati generati o troppo grandi per GitHub
+site/public/data/
+pipeline/data/raw/
+pipeline/data/clean/
+# varie
+__pycache__/
+*.zip
+.DS_Store
